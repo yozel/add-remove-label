@@ -1,7 +1,7 @@
 name: 'Add Remove Label'
 description: 'add or remove pull requests label'
 branding:
-  icon: 'edit'  
+  icon: 'edit'
   color: 'yellow'
 inputs:
   token:
@@ -16,6 +16,9 @@ inputs:
     description: 'add or remove'
     required: true
     default: ''
+  number:
+    description: 'issue or pull request number'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
