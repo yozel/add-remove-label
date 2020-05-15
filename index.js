@@ -11,27 +11,33 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 exports.__esModule = true;
+
 var core = require("@actions/core");
 var github = require("@actions/github");
 var token = core.getInput("token");
 var type = core.getInput("type");
 var label = core.getInput("label");
+var number = core.getInput('number') === '' ? github.context.issue.number : parseInt(core.getInput('number'));
+
 function editLabel() {
     var client = new github.GitHub(token);
     var context = github.context;
-    var pr = context.payload.pull_request;
-    if (!pr) {
+    if (!number) {
+        core.setFailed("Issue number is not found");
         return;
     }
     if (type == "add") {
-        client.issues.addLabels(__assign(__assign({}, context.repo), { issue_number: pr.number, labels: [label] }))["catch"](function (e) {
+        console.log(`Add label "${label}"`);
+        client.issues.addLabels(__assign(__assign({}, context.repo), { issue_number: number, labels: [label] }))["catch"](function (e) {
             console.log(e.message);
         });
     }
     if (type == "remove") {
-        client.issues.removeLabel(__assign(__assign({}, context.repo), { issue_number: pr.number, name: label }))["catch"](function (e) {
+        console.log(`Remove label "${label}"`);
+        client.issues.removeLabel(__assign(__assign({}, context.repo), { issue_number: number, name: label }))["catch"](function (e) {
             console.log(e.message);
         });
     }
+    console.log(`Finished`);
 }
 editLabel();
